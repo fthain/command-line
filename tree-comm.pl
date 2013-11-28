@@ -2,7 +2,7 @@
 
 # tree-comm.pl - concurrently descend two directory trees in lexicographic order
 
-# Copyright (c) 2010, 2011 Finn Thain
+# Copyright (c) 2010, 2011, 2013 Finn Thain
 # fthain@telegraphics.com.au
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -29,7 +29,7 @@ use warnings;
 
 use Getopt::Std;
 $Getopt::Std::STANDARD_HELP_VERSION = 1;
-$::VERSION = '0.4';
+$::VERSION = '0.6';
 sub HELP_MESSAGE() {
   print "Usage: $0 [-1 <perl>] [-2 <perl>] [-3 <perl>] [-c] [-e <perl>] path1 path2\n";
   print 'Options:
@@ -50,135 +50,50 @@ use warnings;
 
 sub spawn {
   my $d = shift;
-  local *FH = shift;
+  local *FH_STDOUT = shift;
+  local *FH_CLOSE1 = shift;
+  local *FH_CLOSE2 = shift;
+  local *FH_CLOSE3 = shift;
   die "$0: does not exist: $d\n" unless -e $d;
   my $pid = fork;
   die "$0: fork: $!\n" unless defined $pid;
   if (!$pid) {
     chdir $d or die "$0: chdir: $!\n";
-    close STDOUT or die "$0: close: $!\n";
-    open STDOUT, ">&FH" or die "$0: open: $!\n";
-    close FH;
+    open(STDOUT, '>&', FH_STDOUT) or die "$0: open: $!\n";
+    close(FH_STDOUT) or warn "$0: close FH_STDOUT: $!\n";
+    close(FH_CLOSE1) or warn "$0: close FH_CLOSE1: $!\n";
+    close(FH_CLOSE2) or warn "$0: close FH_CLOSE2: $!\n";
+    close(FH_CLOSE3) or warn "$0: close FH_CLOSE3: $!\n";
     my @opts = ( '-0', '-s' );
-    push( @opts, '-e', $opt_e ) if defined $opt_e;
+    push(@opts, '-e', $opt_e) if defined $opt_e;
     exec 'find.pl', @opts, '.';
     die "$0: exec: $!\n"
   }
   return $pid
 }
 
-sub do_eval {
-  my $e = shift;
-  local $_ = shift;
-  eval $e;
-  die "$0: eval: $@: $_" if $@ ne ''
-}
-
-sub fn_cmp {
-  # Can't simply use cmp/eq/gt/lt since we need "y/x" to sort before "y x" etc.
-  my @a = split '/', $_[0];
-  my @b = split '/', $_[1];
-  while (1) {
-    my $r = shift(@a) cmp shift(@b);
-    return $r if $r;
-    if (@a) {
-      return 1 unless @b
-    } elsif (@b) {
-      return -1
-    } else {
-      return 0
-    }
-  }
-}
-
 die "$0: incorrect usage. Try --help.\n" unless @ARGV == 2;
 
-if ($opt_c) {
-  my $num_cols = grep { !defined $_ } $opt_1, $opt_2, $opt_3;
-  if ($num_cols) {
-    my $col_1 = 'print "$_\n"';
-    if (!defined $opt_1) {
-      $opt_1 = $col_1
-    } elsif (!defined $opt_2) {
-      $opt_2 = $col_1
-    } elsif (!defined $opt_3) {
-      $opt_3 = $col_1
-    }
-    $num_cols--
-  }
-  if ($num_cols) {
-    my $col_2 = 'print "\t$_\n"';
-    if (!defined $opt_2) {
-      $opt_2 = $col_2
-    } elsif (!defined $opt_3) {
-      $opt_3 = $col_2
-    }
-    $num_cols--
-  } 
-  if ($num_cols) {
-    my $col_3 = 'print "\t\t$_\n"';
-    if (!defined $opt_3) {
-      $opt_3 = $col_3
-    }
-  }
-}
-
+$^F += 4;
 pipe A_READ, A_WRITE;
-my $pid_a = spawn($ARGV[0], *A_WRITE);
-close A_WRITE;
-
 pipe B_READ, B_WRITE;
-my $pid_b = spawn($ARGV[1], *B_WRITE);
-close B_WRITE;
+my $pid_a = spawn($ARGV[0], *A_WRITE, *A_READ, *B_WRITE, *B_READ);
+my $pid_b = spawn($ARGV[1], *B_WRITE, *B_READ, *A_WRITE, *A_READ);
+close(A_WRITE) or warn "$0: close A_WRITE: $!\n";
+close(B_WRITE) or warn "$0: close B_WRITE: $!\n";
 
-$/ = "\0";
+my $afn = fileno(A_READ);
+my $bfn = fileno(B_READ);
 
-my $a = <A_READ>;
-chop $a if defined $a;
+system qw( comm.pl -0 -p ),
+       defined( $opt_c ) ? ( "-c" )           : ( ),
+       defined( $opt_1 ) ? ( "-1", "$opt_1" ) : ( ),
+       defined( $opt_2 ) ? ( "-2", "$opt_2" ) : ( ),
+       defined( $opt_3 ) ? ( "-3", "$opt_3" ) : ( ),
+       "/dev/fd/$afn",
+       "/dev/fd/$bfn";
 
-my $b = <B_READ>;
-chop $b if defined $b;
-
-while (defined($a) and defined($b)) {
-  my $s = fn_cmp($a, $b);
-  if ($s == 0) {
-    do_eval($opt_3, $a) if defined $opt_3 and $opt_3;
-
-    $a = <A_READ>;
-    chop $a if defined $a;
-
-    $b = <B_READ>;
-    chop $b if defined $b;
-  } elsif ($s > 0) {
-    do_eval($opt_2, $b) if defined $opt_2 and $opt_2;
-
-    $b = <B_READ>;
-    chop $b if defined $b;
-  } else {
-    do_eval($opt_1, $a) if defined $opt_1 and $opt_1;
-
-    $a = <A_READ>;
-    chop $a if defined $a;
-  }
-}
-
-if (defined $opt_1) {
-  while (defined $a) {
-    do_eval($opt_1, $a) if defined $opt_1 and $opt_1;
-
-    $a = <A_READ>;
-    chop $a if defined $a;
-  }
-}
-
-if (defined $opt_2) {
-  while (defined $b) {
-    do_eval($opt_2, $b) if defined $opt_2 and $opt_2;
-
-    $b = <B_READ>;
-    chop $b if defined $b;
-  }
-}
+die "$0: comm.pl failed\n" if $? >> 8;
 
 close A_READ;
 waitpid($pid_a, 0);
