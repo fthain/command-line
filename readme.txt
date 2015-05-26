@@ -30,27 +30,24 @@ a process like mv or cat. Some examples --
 # List duplicate files
 find.pl -s -e 'my $d; $d = md5 if -f; if (defined $d) { $::seen{$d} = 0 unless defined $::seen{$d} }' .
 
-# To change all names in /tmp/FOO to lowercase:
-find.pl -de 'my $orig = $_; tr/A-Z/a-z/; rename($orig, $_)' /tmp/FOO
+# To change all names under /tmp/FOO to lowercase:
+find.pl -d -e '$b = $base; $b =~ tr/A-Z/a-z/; rename($dir.$base, $dir.$b)' /tmp/FOO
 
-# To concatenate files recursively (the -f is a perl snippet here):
+# To concatenate files recursively (the -f is the perl snippet here):
 find.pl -0e -f . | xargs -0 cat
 
-# To match filenames using regexp (more succinct than a series of globs):
+# Some systems have perl but not "xargs -0":
+find.pl -e 'push(@::x, $_) if -f; 0' -t 'system "cat", @::x' .
+
+# Match names using regexp (more succinct than a series of globs):
 find.pl -e '/[.]cc?$/' .
 
 # Shorter syntax than the standard Un*x find command (it's just perl):
 find.pl -ve 'prune if $depth == 2; -l' /sys
 
-# Some systems have perl but not "xargs -0":
-find.pl -e 'push(@::x, $_) if -f; 0' -t 'system "cat", @::x' .
-
 # More flexible than the standard Un*x find command.
 # E.g. to indent subdirectories:
-find.pl -e 'print q(  ) x $depth' ~/.config
-
-# Don't descend mountpoints? ... and don't print them either!
-find.pl -x -e '!$pruned' /Volumes
+find.pl -e 'print q(  ) x $depth' .
 
 # Count filenames with control characters 
 find.pl -e '$::n++ if /[[:cntrl:]]/; 0' -t 'print $::n.$/' /tmp
