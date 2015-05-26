@@ -7,8 +7,6 @@ it can handle pathnames correctly. E.g. a/b must sort before a.b
 It isn't limited to merely printing particular lines, it can execute
 a perl snippet for particular lines.
 
-./comm.pl version 0.1 calling Getopt::Std::getopts (version 1.10),
-running under Perl version 5.20.2.
 Usage: ./comm.pl [-0] [-1 <perl>] [-2 <perl>] [-3 <perl>] [-c] [-p] file1 file2
 Options:
             -0 file1 and file2 use null as line separator character.
@@ -61,8 +59,6 @@ find.pl -e '$::n++ if /[[:cntrl:]]/; 0' -t 'print $::n.$/' /tmp
 find.pl -e 'm([.]el$) and ! -f $_.q(c)' .
 
 
-./find.pl version 0.20 calling Getopt::Std::getopts (version 1.10),
-running under Perl version 5.20.2.
 Usage: ./find.pl [-0] [-d] {-e <perl> | -f <file>} [-h] [-n] [-s] [-t <perl>] [-v] [-x] pathname...
 Options:
          -- Treat all remaining arguments as pathnames.
@@ -95,8 +91,6 @@ This program is what you get when you combine comm.pl and find.pl: a way
 to compare to directory trees and execute a perl snippet for entries that
 appear in either or both of those trees.
 
-./tree-comm.pl version 0.6 calling Getopt::Std::getopts (version 1.10),
-running under Perl version 5.20.2.
 Usage: ./tree-comm.pl [-1 <perl>] [-2 <perl>] [-3 <perl>] [-c] [-e <perl>] path1 path2
 Options:
             -1 Execute perl fragment for every directory entry found only under path1.
