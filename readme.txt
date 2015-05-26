@@ -33,8 +33,8 @@ find.pl -s -e 'my $d; $d = md5 if -f; if (defined $d) { $::seen{$d} = 0 unless d
 # To change all names in /tmp/FOO to lowercase:
 find.pl -de 'my $orig = $_; tr/A-Z/a-z/; rename($orig, $_)' /tmp/FOO
 
-# To concatenate files recursively:
-find.pl -0ef . | xargs -0 cat
+# To concatenate files recursively (the -f is a perl snippet here):
+find.pl -0e -f . | xargs -0 cat
 
 # To match filenames using regexp (more succinct than a series of globs):
 find.pl -e '/[.]cc?$/' .
@@ -56,7 +56,7 @@ find.pl -x -e '!$pruned' /Volumes
 find.pl -e '$::n++ if /[[:cntrl:]]/; 0' -t 'print $::n.$/' /tmp
 
 # List .el files in a directory tree without a corresponding .elc file
-find.pl -e 'm([.]el$) and ! -f $_.q(c)' .
+find.pl -e 'm([.]el$) and ! -f "${_}c"' .
 
 
 Usage: ./find.pl [-0] [-d] {-e <perl> | -f <file>} [-h] [-n] [-s] [-t <perl>] [-v] [-x] pathname...
