@@ -27,6 +27,9 @@ its syntax is sane. Even though it uses perl's eval function, it will
 run faster than the standard find command if it avoids having to spawn
 a process like mv or cat. Some examples --
 
+# What was changed recently? List . recursively, sorted by age of changes
+find.pl -e 'print sprintf q(%015.9f %s), (-M $_), $_.$/; 0' . | sort -rn
+
 # List duplicate files
 find.pl -s -e 'my $d; $d = md5 if -f; if (defined $d) { $::seen{$d} = 0 unless defined $::seen{$d} }' .
 
