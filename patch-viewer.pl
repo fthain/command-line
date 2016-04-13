@@ -26,6 +26,8 @@
 use strict;
 use warnings;
 
+$::VERSION = '0.1';
+
 # input    | resulting state
 # ---------+----------------
 # whatever | 0
