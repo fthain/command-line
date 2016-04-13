@@ -109,3 +109,11 @@ Options:
                For example, passing -c -3 0 will print entries unique to path1 or path2.
             -e Pass this fragment to find.pl to filter entries in path1 and path2.
                (See find.pl --help for information about the available variables.)
+
+
+
+ConvertStickiesDatabase.pl
+--------------------------
+
+This program converts the contents of the Mac OS X Stickies Database 
+into a series of RTF text files.
