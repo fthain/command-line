@@ -35,7 +35,7 @@ use Digest::MD5;
 
 use Getopt::Std;
 $Getopt::Std::STANDARD_HELP_VERSION = 1;
-$::VERSION = '0.20';
+$::VERSION = '0.21';
 sub HELP_MESSAGE {
   print "Usage: $0 [-0] [-d] {-e <perl> | -f <file>} [-h] [-n] [-s] [-t <perl>] [-v] [-x] pathname...\n";
   print 'Options:
@@ -236,8 +236,8 @@ sub descend {
     return $result if $pruned
   }
 
-  if ( ( -d and ( $opt_h or ! -l ) and
-       ( ! $opt_x or ( $opt_h ? stat : lstat )[ 0 ] == $parent_dev ) ) ) {
+  if ( -d and ( $opt_h or ! -l ) and
+       ( ! $opt_x or ( $opt_h ? stat : lstat )[ 0 ] == $parent_dev ) ) {
     $depth++;
 
     local *D;
