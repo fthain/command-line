@@ -1,3 +1,12 @@
+patch-viewer.pl
+---------------
+
+This program takes any patch in unified diff format and displays it using
+a graphical diff/merge tool such as 'meld'. The side-by-side view of a
+patch is usually more comprehensible which makes code review easier.
+
+
+
 comm.pl
 -------
 
