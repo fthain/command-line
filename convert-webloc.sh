@@ -6,7 +6,7 @@
 # Convert Mac OS .webloc files to Linux .desktop files.
 # Pass a directory or file name as first argument.
 # Handles JSON, XML and binary webloc files. Reverts changes to timestamps.
-# Runs on Mac OS and requires cmd line Developer Tools to be installed.
+# Runs on Mac OS and requires command-line Developer Tools to be installed.
 # See also http://hints.macworld.com/article.php?story=20040728185233128
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -100,8 +100,8 @@ URL=$url
 Icon=text-html
 );
     close(D) or die $!;
-    utime( $dir_mtime, $dir_mtime, $dir );
-    utime( $file_mtime, $file_mtime, $_ );
+    utime($dir_mtime, $dir_mtime, $dir);
+    utime($file_mtime, $file_mtime, $_);
   '
 
 rm "$TEMPFILE"
