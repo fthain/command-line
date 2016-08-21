@@ -27,6 +27,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+use File::Basename;
+
 use strict;
 use warnings;
 
@@ -37,11 +39,12 @@ die unless -f $tempfile;
 open(OLDOUT, ">&STDOUT") or die $!;
 
 foreach (@ARGV) {
-  my $base = $_;
-  $base =~ s,.*/,,;
-  $base =~ s,.webloc$,,;
-  my $dir = $_;
-  $dir =~ s,[^/]*/*$,,;
+  my ($base, $dir, $suffix) = fileparse($_, qw(.webloc));
+
+  if (!(-f "$dir$base$suffix")) {
+    warn "$_ ($dir$base$suffix): skipped\n";
+    next;
+  }
 
   my $dir_mtime = (stat $dir)[9];
   my $file_mtime = (stat $_)[9];
