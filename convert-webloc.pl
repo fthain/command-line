@@ -41,8 +41,8 @@ open(OLDOUT, ">&STDOUT") or die $!;
 foreach (@ARGV) {
   my ($base, $dir, $suffix) = fileparse($_, qw(.webloc));
 
-  if (!(-f "$dir$base$suffix")) {
-    warn "$_ ($dir$base$suffix): skipped\n";
+  if (!($suffix && -f $_)) {
+    warn "$_: Skipped, not a webloc file\n";
     next;
   }
 
@@ -52,22 +52,22 @@ foreach (@ARGV) {
   my $url;
   if (-s $_) {
     # file has something in the data fork
-    open(W, q(<), $_) or die $!;
-    my $data = join(q(), <W>);
+    open(W, '<', $_) or die $!;
+    my $data = join('', <W>);
     close(W) or die $!;
-    if (index($data, q(bplist)) != 0 &&
-        index($data, q(?xml )) < 0 &&
-        index($data, q({)) != 0) {
-      warn qq(Not JSON, XML nor binary plist: $_\n);
+    if (index($data, 'bplist') != 0 &&
+        index($data, '?xml ') < 0 &&
+        index($data, '{') != 0) {
+      warn "$_: Not JSON, XML nor binary plist\n";
       next;
     }
 
-    system( qw(plutil -extract URL binary1), $_ ) == 0 or die qq($? ($!));
-    open(STDOUT, q(>), $tempfile) or die $!;
-    system( qw(plutil -p), $_ ) == 0 or die qq($? ($!));
+    system(qw(plutil -extract URL binary1), $_) == 0 or die "$? ($!)";
+    open(STDOUT, '>', $tempfile) or die $!;
+    system(qw(plutil -p), $_) == 0 or die "$? ($!)";
     close(STDOUT) or die $!;
-    open(STDOUT, q(>&OLDOUT)) or die $!;
-    open(U, q(<), $tempfile) or die $!;
+    open(STDOUT, '>&OLDOUT') or die $!;
+    open(U, '<', $tempfile) or die $!;
     $url = <U>;
     close(U) or die $!;
     chop $url;
@@ -75,22 +75,22 @@ foreach (@ARGV) {
     $url =~ s,"$,,;
   } else {
     # otherwise it presumably has something in the resource fork
-    open(STDOUT, q(>), $tempfile) or die $!;
-    system( qw(DeRez -e -only), q(url ), $_ ) == 0 or die qq($? ($!));
+    open(STDOUT, '>', $tempfile) or die $!;
+    system(qw(DeRez -e -only), 'url ', $_) == 0 or die "$? ($!)";
     close(STDOUT) or die $!;
-    open(STDOUT, q(>&OLDOUT)) or die $!;
-    open(U, q(<), $tempfile) or die $!;
+    open(STDOUT, '>&OLDOUT') or die $!;
+    open(U, '<', $tempfile) or die $!;
     my $u = <U>;
     close(U) or die $!;
     if (!length($u)) {
-      warn qq(No url resource: $_);
+      warn "$_: No url resource";
       next;
     }
 
     local $_ = $u;
     s,.*{,,;
     s,}.*,,;
-    $url = q();
+    $url = '';
     foreach my $line (split chr(10), $_) {
       chop;
       $line =~ s,^\t.",,;
@@ -103,14 +103,14 @@ foreach (@ARGV) {
   unlink($_) or die $!;
 
   $_ =~ s,webloc$,desktop,;
-  open(D, q(>), $_) or die $!;
-  print D qq([Desktop Entry]
+  open(D, '>', $_) or die $!;
+  print D "[Desktop Entry]
 Encoding=UTF-8
 Name=$base
 Type=Link
 URL=$url
 Icon=text-html
-);
+";
   close(D) or die $!;
   utime($dir_mtime, $dir_mtime, $dir);
   utime($file_mtime, $file_mtime, $_);
