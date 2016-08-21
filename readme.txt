@@ -112,8 +112,18 @@ Options:
 
 
 
-ConvertStickiesDatabase.pl
---------------------------
+convert-stickies-database.pl
+----------------------------
 
 This program converts the contents of the Mac OS X Stickies Database 
 into a series of RTF text files.
+
+
+
+convert-webloc.pl
+-----------------
+
+This program converts Mac .webloc files into standard desktop entries, as per
+https://specifications.freedesktop.org/desktop-entry-spec/latest/
+
+
