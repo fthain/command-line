@@ -24,18 +24,19 @@
 # SOFTWARE.
 
 
-use strict;
-use warnings;
 use POSIX qw( strftime
               S_IRGRP S_IROTH S_IRUSR S_IRWXG S_IRWXO S_IRWXU
               S_ISBLK S_ISCHR S_ISDIR S_ISFIFO S_ISGID S_ISREG S_ISUID
               S_IWGRP S_IWOTH S_IWUSR );
 use Digest::MD5;
-
-
 use Getopt::Std;
+
+use 5.008;
+use strict;
+use warnings;
+
 $Getopt::Std::STANDARD_HELP_VERSION = 1;
-$::VERSION = '0.21';
+$::VERSION = '0.22';
 sub HELP_MESSAGE {
   print "Usage: $0 [-0] [-d] {-e <perl> | -f <file>} [-h] [-n] [-s] [-t <perl>] [-v] [-x] pathname...\n";
   print 'Options:

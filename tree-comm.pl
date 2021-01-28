@@ -23,13 +23,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+use Getopt::Std;
 
+use 5.008;
 use strict;
 use warnings;
 
-use Getopt::Std;
 $Getopt::Std::STANDARD_HELP_VERSION = 1;
-$::VERSION = '0.6';
+$::VERSION = '0.7';
 sub HELP_MESSAGE() {
   print "Usage: $0 [-1 <perl>] [-2 <perl>] [-3 <perl>] [-c] [-e <perl>] path1 path2\n";
   print 'Options:
@@ -44,9 +45,6 @@ sub HELP_MESSAGE() {
 }
 our ($opt_1, $opt_2, $opt_3, $opt_c, $opt_e);
 getopts( '1:2:3:ce:' );
-
-use strict;
-use warnings;
 
 sub spawn {
   my $d = shift;

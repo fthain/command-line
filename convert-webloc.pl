@@ -29,8 +29,11 @@
 
 use File::Basename;
 
+use 5.008;
 use strict;
 use warnings;
+
+$::VERSION = '0.1';
 
 my $tempfile = qx(mktemp);
 chop $tempfile;

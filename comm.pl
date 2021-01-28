@@ -24,12 +24,14 @@
 # SOFTWARE.
 
 
+use Getopt::Std;
+
+use 5.008;
 use strict;
 use warnings;
 
-use Getopt::Std;
 $Getopt::Std::STANDARD_HELP_VERSION = 1;
-$::VERSION = '0.1';
+$::VERSION = '0.2';
 sub HELP_MESSAGE() {
   print "Usage: $0 [-0] [-1 <perl>] [-2 <perl>] [-3 <perl>] [-c] [-p] file1 file2\n";
   print 'Options:

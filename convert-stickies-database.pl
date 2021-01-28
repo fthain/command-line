@@ -26,10 +26,11 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
+use 5.008;
 use strict;
 use warnings;
 
-$::VERSION = '0.1';
+$::VERSION = '0.2';
 
 die "Usage: $0 StickiesDatabase\n" unless -f $ARGV[0];
 
