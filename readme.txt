@@ -127,3 +127,20 @@ This program converts Mac .webloc files into standard desktop entries, as per
 https://specifications.freedesktop.org/desktop-entry-spec/latest/
 
 
+
+inplace.pl
+----------
+
+This program takes a list of files on standard input and runs each file
+through an arbitrary filter command. The output from the filter command
+is then used to replace the original file. Alternatively, the output may
+be passed to 'diff'. For example:
+
+# Many utilities can't handle certain valid filenames, such as hyphen
+printf - | inplace.pl -- sed -e s/this/that/
+
+# Many useful filter utilities don't have an in-place option like 'perl -i'.
+ls my_file | inplace.pl -- nl
+
+# Those utilities that do offer an in-place option don't allow a dry run
+find . -name *.c -print0 | inplace.pl -0 -d -- sed -e s/bugy/buggy/
