@@ -57,10 +57,10 @@ my @valid_transitions = ( [ 0, 1,                ],
 
 my $state = 0;
 
-die "Usage: $0 [ patch-file | - ]\n" unless scalar(@ARGV) == 1;
+die "Usage: $0 { patch-file | - }\n" unless scalar(@ARGV) == 1;
 $ARGV[0] = '/dev/stdin' if $ARGV[0] eq '-';
 
-my $temp = qx( mktemp -d /tmp/patch-viewer.XXXX );
+my $temp = qx(mktemp -d /tmp/patch-viewer.XXXX);
 chop $temp;
 die "mktemp failed\n" unless -d $temp;
 

@@ -2,7 +2,7 @@
 
 # This hack will convert Mac OS X Stickies notes into standard
 # RTF text files in a subdirectory of $HOME.
-# This was written without any knowledge of the official Stickies
+# This was written without any knowledge of Apple's official Stickies
 # file format so YMMV.
 
 # Copyright (c) 2015-2016 Finn Thain
@@ -48,11 +48,11 @@ $/ = "".chr(0x01);
 while (<SD>) {
 	chop;
 	$count++;
-	if (s,.*\0({\\rtf1),$1, and $_) {
+	if (s,.*\0({\\rtf1),$1,) {
 		my $fn = sprintf("%s/%04d.rtf", $temp, $count);
 		open(STDOUT, '>', $fn) or die "open $fn: $!\n";
 		print;
 		close STDOUT;
 	}
 }
-close SD;
+close(SD);
