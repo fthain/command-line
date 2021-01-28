@@ -5,6 +5,7 @@ This program takes any patch in unified diff format and displays it using
 a graphical diff/merge tool such as 'meld'. The side-by-side view of a
 patch is usually more comprehensible which makes code review easier.
 
+Usage: ./patch-viewer.pl { patch-file | - }
 
 
 comm.pl
@@ -25,7 +26,6 @@ Options:
             -c Behave like comm(1) and print entries in three columns.
                For example, passing -c -3 0 will print lines unique to file1 or file2.
             -p Treat lines as pathnames rather than text.
-
 
 
 find.pl
@@ -67,7 +67,6 @@ find.pl -e '$::n++ if /[[:cntrl:]]/; 0' -t 'print $::n.$/' /tmp
 # List .el files in a directory tree without a corresponding .elc file
 find.pl -e 'm([.]el$) and ! -f "${_}c"' .
 
-
 Usage: ./find.pl [-0] [-d] {-e <perl> | -f <file>} [-h] [-n] [-s] [-t <perl>] [-v] [-x] pathname...
 Options:
          -- Treat all remaining arguments as pathnames.
@@ -92,7 +91,6 @@ Options:
          -x Do not descend mount points.
 
 
-
 tree-comm.pl
 ------------
 
@@ -111,7 +109,6 @@ Options:
                (See find.pl --help for information about the available variables.)
 
 
-
 convert-stickies-database.pl
 ----------------------------
 
@@ -119,13 +116,11 @@ This program converts the contents of the Mac OS X Stickies Database
 into a series of RTF text files.
 
 
-
 convert-webloc.pl
 -----------------
 
-This program converts Mac .webloc files into standard desktop entries, as per
+This program converts Mac OS X .webloc files into .desktop files, as per
 https://specifications.freedesktop.org/desktop-entry-spec/latest/
-
 
 
 inplace.pl
@@ -139,8 +134,14 @@ be passed to 'diff'. For example:
 # Many utilities can't handle certain valid filenames, such as hyphen
 printf - | inplace.pl -- sed -e s/this/that/
 
-# Many useful filter utilities don't have an in-place option like 'perl -i'.
-ls my_file | inplace.pl -- nl
+# Many useful filter utilities don't have an in-place option like 'perl -i'
+ls file.txt | inplace.pl -- dos2unix
 
 # Those utilities that do offer an in-place option don't allow a dry run
 find . -name *.c -print0 | inplace.pl -0 -d -- sed -e s/bugy/buggy/
+
+Usage: ./inplace.pl [-0] [-d] -- command ...
+Options:
+         -- Take all remaining arguments to be the filter command line.
+         -0 Use NUL character as pathname separator for stdin.
+	 -d Generate a patch on stdout. Do not modify any files.
