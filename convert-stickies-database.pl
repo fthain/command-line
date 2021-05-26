@@ -6,7 +6,6 @@
 # file format so YMMV.
 
 # Copyright (c) 2015-2016 Finn Thain
-# fthain@telegraphics.com.au
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal

@@ -1,7 +1,6 @@
 #!/usr/bin/perl
 
 # Copyright (c) 2016 Finn Thain
-# fthain@telegraphics.com.au
 
 # Convert Mac OS .webloc files to Linux .desktop files.
 # Pass webloc file names as arguments.

@@ -3,7 +3,6 @@
 # find(1) for perl programmers.
 
 # Copyright (c) 2006-2012 Finn Thain
-# fthain@telegraphics.com.au
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal

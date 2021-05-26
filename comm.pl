@@ -3,7 +3,6 @@
 # comm.pl - compare two files having lines in lexicographic or pathname order
 
 # Copyright (c) 2013 Finn Thain
-# fthain@telegraphics.com.au
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
