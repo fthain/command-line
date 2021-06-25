@@ -46,7 +46,7 @@ if (defined($cmd_start)) {
 }
 
 $Getopt::Std::STANDARD_HELP_VERSION = 1;
-$::VERSION = '0.1';
+$::VERSION = '0.2';
 sub HELP_MESSAGE {
   print "Usage: $0 [-0] [-d] -- command ...\n";
   print 'Options:
@@ -60,6 +60,8 @@ our ($opt_0, $opt_d);
 getopts('0d');
 
 die "No filter command specified.\n" unless @command;
+
+$/ = chr(0) if ($opt_0);
 
 while (<STDIN>) {
 	chop;
