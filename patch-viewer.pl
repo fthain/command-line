@@ -26,7 +26,7 @@ use 5.008;
 use strict;
 use warnings;
 
-$::VERSION = '0.2';
+$::VERSION = '0.3';
 
 # input    | resulting state
 # ---------+----------------
@@ -50,7 +50,7 @@ my @valid_transitions = ( [ 0, 1,                ],
                           [       2,             ],
                           [          3,          ],
                           [             4, 5, 6, ],
-                          [ 0,       3, 4, 5, 6, ],
+                          [ 0, 1,    3, 4, 5, 6, ],
                           [ 0,          4, 5, 6, ],
                           [ 0,          4,    6, ], );
 
