@@ -140,8 +140,17 @@ ls file.txt | inplace.pl -- dos2unix
 # Those utilities that do offer an in-place option don't allow a dry run
 find . -name *.c -print0 | inplace.pl -0 -d -- sed -e s/bugy/buggy/
 
-Usage: ./inplace.pl [-0] [-d] -- command ...
+Usage: ./inplace.pl [-0] [-d] [-e] -- command ...
 Options:
          -- Take all remaining arguments to be the filter command line.
          -0 Use NUL character as pathname separator for stdin.
 	 -d Generate a patch on stdout. Do not modify any files.
+	 -e Continue even if the child process reports an error.
+
+
+squeeze.pl
+----------
+
+Copies stdin to stdout while removing runs of duplicated lines and
+printing their count instead, much like syslogd does with consecutive
+duplicate log entries.
