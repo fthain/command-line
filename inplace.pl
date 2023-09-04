@@ -46,18 +46,19 @@ if (defined($cmd_start)) {
 }
 
 $Getopt::Std::STANDARD_HELP_VERSION = 1;
-$::VERSION = '0.2';
+$::VERSION = '0.3';
 sub HELP_MESSAGE {
-  print "Usage: $0 [-0] [-d] -- command ...\n";
+  print "Usage: $0 [-0] [-d] [-e] -- command ...\n";
   print 'Options:
          -- Take all remaining arguments to be the filter command line.
          -0 Use NUL character as pathname separator for stdin.
 	 -d Generate a patch on stdout. Do not modify any files.
+	 -e Continue even if the child process reports an error.
 ';
 }
 
-our ($opt_0, $opt_d);
-getopts('0d');
+our ($opt_0, $opt_d, $opt_e);
+getopts('0de');
 
 die "No filter command specified.\n" unless @command;
 
@@ -88,7 +89,11 @@ while (<STDIN>) {
 	wait();
 
 	my $result = $? >> 8;
-	die "child failed ($result): $_\n" if $result;
+	if ($result) {
+		my $msg = "child failed ($result): $_\n";
+		die $msg unless $opt_e;
+		warn $msg;
+	}
 
 	if ($::opt_d) {
 		die "bad filename: $_\n" if $_ eq q(-);
